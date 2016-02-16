@@ -1,11 +1,13 @@
 package com.baicai.futurekiller.data;
 
+import java.util.Date;
+
 public class Tick {
 	// 合约id
 	private int contractId;
 	// 合约月份
 	private int month;
-	private long time;
+	private Date time;
 	private int price;
 	// 成交量（当前累计）
 	private int tradingVolume;
@@ -16,7 +18,7 @@ public class Tick {
 	// 卖量
 	private int sellVol;
 
-	public Tick(int contractId, int month, long time, int price, int tradingVolume, int openInterest, int buyVol,
+	public Tick(int contractId, int month, Date time, int price, int tradingVolume, int openInterest, int buyVol,
 			int sellVol) {
 		super();
 		this.contractId = contractId;
@@ -37,7 +39,7 @@ public class Tick {
 		return month;
 	}
 
-	public long getTime() {
+	public Date getTime() {
 		return time;
 	}
 
@@ -67,7 +69,7 @@ public class Tick {
 		int result = 1;
 		result = prime * result + contractId;
 		result = prime * result + month;
-		result = prime * result + (int) (time ^ (time >>> 32));
+		result = prime * result + ((time == null) ? 0 : time.hashCode());
 		return result;
 	}
 
@@ -84,9 +86,11 @@ public class Tick {
 			return false;
 		if (month != other.month)
 			return false;
-		if (time != other.time)
+		if (time == null) {
+			if (other.time != null)
+				return false;
+		} else if (!time.equals(other.time))
 			return false;
 		return true;
 	}
-
 }
