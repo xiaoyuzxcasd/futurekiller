@@ -1,23 +1,19 @@
-package com.baicai.futurekiller;
+package com.baicai.futurekiller.tick;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import com.baicai.futurekiller.HttpRequest;
 import com.baicai.futurekiller.data.EContract;
 import com.baicai.futurekiller.data.Tick;
 import com.baicai.futurekiller.data.TickFactory;
 
-public class TickManager {
+public class SinaTickCollector implements ITickCollector {
 	private static final String Url = "http://hq.sinajs.cn";
 
 	private static final String ParamPattern = "list=%s";
 
-	private static final TickManager instance = new TickManager();
-
-	public static TickManager instance() {
-		return instance;
-	}
-
+	@Override
 	public Tick getTick(EContract contract, int month) {
 		String contractName = createContractName(contract, month);
 		String response = HttpRequest.sendGet(Url, String.format(ParamPattern, contractName));
