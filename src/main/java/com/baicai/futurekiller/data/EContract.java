@@ -1,5 +1,8 @@
 package com.baicai.futurekiller.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum EContract {
 	/** 螺纹钢 */
 	RB(1)
@@ -57,6 +60,8 @@ public enum EContract {
 	,TA(27)
 	;
 
+	private static final Map<Integer, EContract> id2Contract = initId2Contract();
+
 	private int id;
 
 	private EContract(int id) {
@@ -65,5 +70,17 @@ public enum EContract {
 
 	public int getId() {
 		return id;
+	}
+
+	private static Map<Integer, EContract> initId2Contract() {
+		Map<Integer, EContract> map = new HashMap<Integer, EContract>();
+		for (EContract contract : EContract.values()) {
+			map.put(contract.getId(), contract);
+		}
+		return map;
+	}
+
+	public static EContract getEContractById(int id) {
+		return id2Contract.get(id);
 	}
 }

@@ -1,5 +1,6 @@
 package com.baicai.futurekiller.tick;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import com.baicai.futurekiller.data.EContract;
 import com.baicai.futurekiller.data.Tick;
 import com.baicai.futurekiller.util.FkScheduledExecutor;
 import com.baicai.futurekiller.util.RandomUtil;
+import com.baicai.futurekiller.util.TimePoint;
 
 public class TickManager {
 	private static final int MaxSize = 1000;
@@ -22,20 +24,47 @@ public class TickManager {
 	private int month;
 	private ConcurrentLinkedDeque<Tick> tickList;
 	private long lastWriteBackTime;
+	private TimePoint timePoint;
 
 	public TickManager(EContract contract, int month) {
 		this.contract = contract;
 		this.month = month;
 		this.tickList = new ConcurrentLinkedDeque<Tick>();
-		this.lastWriteBackTime = 0L;
+		initTickList();
+		Tick last = tickList.peekLast();
+		if (last == null) {
+			this.lastWriteBackTime = 0L;
+		} else {
+			this.lastWriteBackTime = last.getTime().getTime();
+		}
+		this.timePoint = new TimePoint(8, 59, true, null);
+		this.timePoint.setNext(new TimePoint(11, 32, false, new TimePoint(13, 29, true, new TimePoint(15, 32, false,
+				new TimePoint(21, 29, true, new TimePoint(2, 32, false, timePoint))))));
+		this.timePoint.refreshTime();
 		FkScheduledExecutor.instance().scheduleAtFixedRate(() -> collectTick(), RandomUtil.randomBetween(0, 30 * 1000),
 				30 * 1000, TimeUnit.MILLISECONDS);
 		FkScheduledExecutor.instance().scheduleAtFixedRate(() -> writeBack(), RandomUtil.randomBetween(0, 10 * 60),
 				10 * 60, TimeUnit.SECONDS);
 	}
 
+	private void initTickList() {
+		List<Tick> list = tickDao.getLastTickList(MaxSize);
+		for (Tick tick : list) {
+			tickList.addFirst(tick);
+		}
+	}
+
 	private void collectTick() {
+		long now = System.currentTimeMillis();
+		if (!isTradingHours(now)) {
+			return;
+		}
+		
 		Tick tick = tickCollector.getTick(contract, month);
+		if (tick == null) {
+			return;
+		}
+
 		if (tickList.isEmpty()) {
 			tickList.add(tick);
 		} else {
@@ -48,6 +77,18 @@ public class TickManager {
 		if (tickList.size() > MaxSize) {
 			tickList.removeFirst();
 		}
+	}
+	
+	private boolean isTradingHours(long now) {
+		boolean result;
+		if (now >= timePoint.getTime()) {
+			timePoint = timePoint.getNext();
+			timePoint.refreshTime();
+			result = isTradingHours(now);
+		} else {
+			result = !timePoint.isBeginTime();
+		}
+		return result;
 	}
 
 	private void writeBack() {
@@ -74,10 +115,17 @@ public class TickManager {
 	/**
 	 * 获取快照
 	 */
-	public List<Tick> getTickListSnapshot() {
-		List<Tick> result = new LinkedList<Tick>();
-		for (Tick tick : tickList) {
-			result.add(tick);
+	public List<Tick> getTickListSnapshot(int size) {
+		size = Math.min(size, tickList.size());
+		ArrayList<Tick> result = new ArrayList<Tick>(size);
+		int count = 0;
+		Iterator<Tick> iterator = tickList.descendingIterator();
+		while (iterator.hasNext()) {
+			Tick tick = iterator.next();
+			result.set(size - 1 - count++, tick);
+			if (count >= size) {
+				break;
+			}
 		}
 		return result;
 	}

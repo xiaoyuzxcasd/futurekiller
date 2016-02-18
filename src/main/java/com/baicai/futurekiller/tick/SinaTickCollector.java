@@ -22,7 +22,6 @@ public class SinaTickCollector implements ITickCollector {
 	}
 
 	private String createContractName(EContract contract, int month) {
-		// TODO
 		Calendar cal = Calendar.getInstance();
 		if (cal.get(Calendar.MONTH) > month) {
 			cal.add(Calendar.YEAR, 1);

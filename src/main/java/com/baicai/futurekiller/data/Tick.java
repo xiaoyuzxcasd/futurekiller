@@ -35,32 +35,64 @@ public class Tick {
 		return contractId;
 	}
 
+	public void setContractId(int contractId) {
+		this.contractId = contractId;
+	}
+
 	public int getMonth() {
 		return month;
+	}
+
+	public void setMonth(int month) {
+		this.month = month;
 	}
 
 	public Date getTime() {
 		return time;
 	}
 
+	public void setTime(Date time) {
+		this.time = time;
+	}
+
 	public int getPrice() {
 		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
 	}
 
 	public int getTradingVolume() {
 		return tradingVolume;
 	}
 
+	public void setTradingVolume(int tradingVolume) {
+		this.tradingVolume = tradingVolume;
+	}
+
 	public int getOpenInterest() {
 		return openInterest;
+	}
+
+	public void setOpenInterest(int openInterest) {
+		this.openInterest = openInterest;
 	}
 
 	public int getBuyVol() {
 		return buyVol;
 	}
 
+	public void setBuyVol(int buyVol) {
+		this.buyVol = buyVol;
+	}
+
 	public int getSellVol() {
 		return sellVol;
+	}
+
+	public void setSellVol(int sellVol) {
+		this.sellVol = sellVol;
 	}
 
 	@Override
