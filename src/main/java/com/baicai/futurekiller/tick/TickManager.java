@@ -19,6 +19,10 @@ public class TickManager {
 	private static final ITickCollector tickCollector = new SinaTickCollector();
 
 	private static final TickDao tickDao = new TickDao();
+	
+	private static final int CollectPeroid = 15 * 1000;
+	
+	private static final int WriteBackPeroid = 5 * 60;
 
 	private EContract contract;
 	private int month;
@@ -39,12 +43,12 @@ public class TickManager {
 		}
 		this.timePoint = new TimePoint(8, 59, true, null);
 		this.timePoint.setNext(new TimePoint(11, 32, false, new TimePoint(13, 29, true, new TimePoint(15, 32, false,
-				new TimePoint(21, 29, true, new TimePoint(2, 32, false, timePoint))))));
+				new TimePoint(20, 59, true, new TimePoint(2, 32, false, timePoint))))));
 		this.timePoint.refreshTime();
-		FkScheduledExecutor.instance().scheduleAtFixedRate(() -> collectTick(), RandomUtil.randomBetween(0, 30 * 1000),
-				30 * 1000, TimeUnit.MILLISECONDS);
-		FkScheduledExecutor.instance().scheduleAtFixedRate(() -> writeBack(), RandomUtil.randomBetween(0, 10 * 60),
-				10 * 60, TimeUnit.SECONDS);
+		FkScheduledExecutor.instance().scheduleAtFixedRate(() -> collectTick(), RandomUtil.randomBetween(0, CollectPeroid),
+				CollectPeroid, TimeUnit.MILLISECONDS);
+		FkScheduledExecutor.instance().scheduleAtFixedRate(() -> writeBack(), RandomUtil.randomBetween(0, WriteBackPeroid),
+				WriteBackPeroid, TimeUnit.SECONDS);
 	}
 
 	private void initTickList() {
@@ -92,7 +96,7 @@ public class TickManager {
 	}
 
 	private void writeBack() {
-		List<Tick> updateList = new LinkedList<Tick>();
+		LinkedList<Tick> updateList = new LinkedList<Tick>();
 		Iterator<Tick> iterator = tickList.descendingIterator();
 		long lastTime = 0L;
 		while (iterator.hasNext()) {
@@ -102,7 +106,7 @@ public class TickManager {
 			}
 
 			if (tick.getTime().getTime() > lastWriteBackTime) {
-				updateList.add(tick);
+				updateList.addFirst(tick);
 			}
 		}
 

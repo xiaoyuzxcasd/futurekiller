@@ -13,7 +13,7 @@ public class FkScheduledExecutor {
 	private ScheduledExecutorService executor;
 
 	private FkScheduledExecutor() {
-		this.executor = Executors.newScheduledThreadPool(3, new PoolThreadFactory("ScheduledExecutor"));
+		this.executor = Executors.newScheduledThreadPool(1, new PoolThreadFactory("ScheduledExecutor"));
 	}
 
 	public static FkScheduledExecutor instance() {

@@ -2,6 +2,8 @@ package com.baicai.futurekiller.data;
 
 import java.util.Date;
 
+import com.baicai.futurekiller.util.DateUtil;
+
 public class Tick {
 	// 合约id
 	private int contractId;
@@ -124,5 +126,12 @@ public class Tick {
 		} else if (!time.equals(other.time))
 			return false;
 		return true;
+	}
+	
+	public String buildString(){
+		return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", getContractId(),
+				getMonth(), DateUtil.formatYMDHMS(getTime()), getPrice(),
+				getTradingVolume(), getOpenInterest(), getBuyVol(),
+				getSellVol());
 	}
 }
