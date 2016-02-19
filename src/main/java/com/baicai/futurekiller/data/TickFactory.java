@@ -21,11 +21,14 @@ public class TickFactory {
 		String timeStr = termArr[1];
 		Date time = createDateTime(timeStr);
 		int price = Integer.parseInt(termArr[8]);
+		int buyPirce = Integer.parseInt(termArr[6]);
+		int sellPirce = Integer.parseInt(termArr[7]);
 		int tradingVolume = Integer.parseInt(termArr[14]);
 		int openInterest = Integer.parseInt(termArr[13]);
 		int buyVol = Integer.parseInt(termArr[11]);
 		int sellVol = Integer.parseInt(termArr[12]);
-		return new Tick(contract.getId(), month, time, price, tradingVolume, openInterest, buyVol, sellVol);
+		return new Tick(contract.getId(), month, time, price, buyPirce, sellPirce, tradingVolume, openInterest, buyVol,
+				sellVol);
 	}
 
 	private static Date createDateTime(String timeStr) {

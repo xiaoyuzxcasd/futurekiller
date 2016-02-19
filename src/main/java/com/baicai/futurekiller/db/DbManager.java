@@ -38,11 +38,11 @@ public class DbManager {
 		}
 	}
 
-	public static <T> T selectSql(String sql, ResultSetHandler<T> rsh) {
+	public static <T> T selectSql(String sql, ResultSetHandler<T> rsh, Object... params) {
 		Connection conn = getDbConnection();
 		QueryRunner qRunner = new QueryRunner();
 		try {
-			return qRunner.query(conn, sql, rsh);
+			return qRunner.query(conn, sql, rsh, params);
 		} catch (SQLException e) {
 			ServerLogger.error("selectSql error:", e);
 			return null;
@@ -58,18 +58,18 @@ public class DbManager {
 	private static Connection getDbConnection() {
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://10.17.1.61/pjyhis", "pjy", "pjy");
+			conn = DriverManager.getConnection("jdbc:mysql://10.17.1.61/killer", "pjy", "pjy");
 		} catch (SQLException e) {
 			ServerLogger.error("connect failed!", e);
 		}
 		return conn;
 	}
 
-	public static <T> T selectOne(String sql, Class<T> cls) {
-		return selectSql(sql, new BeanHandler<T>(cls));
+	public static <T> T selectOne(String sql, Class<T> cls, Object... params) {
+		return selectSql(sql, new BeanHandler<T>(cls), params);
 	}
 
-	public static <T> List<T> selectList(String sql, Class<T> cls) {
-		return selectSql(sql, new BeanListHandler<T>(cls));
+	public static <T> List<T> selectList(String sql, Class<T> cls, Object... params) {
+		return selectSql(sql, new BeanListHandler<T>(cls), params);
 	}
 }

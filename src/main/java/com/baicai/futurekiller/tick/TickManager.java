@@ -52,7 +52,7 @@ public class TickManager {
 	}
 
 	private void initTickList() {
-		List<Tick> list = tickDao.getLastTickList(MaxSize);
+		List<Tick> list = tickDao.getLastTickList(contract.getId(), month, MaxSize);
 		for (Tick tick : list) {
 			tickList.addFirst(tick);
 		}

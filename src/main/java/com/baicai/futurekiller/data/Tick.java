@@ -11,6 +11,8 @@ public class Tick {
 	private int month;
 	private Date time;
 	private int price;
+	private int buyPrice;
+	private int sellPrice;
 	// 成交量（当前累计）
 	private int tradingVolume;
 	// 持仓量（当前累计）
@@ -20,13 +22,15 @@ public class Tick {
 	// 卖量
 	private int sellVol;
 
-	public Tick(int contractId, int month, Date time, int price, int tradingVolume, int openInterest, int buyVol,
-			int sellVol) {
+	public Tick(int contractId, int month, Date time, int price, int buyPrice, int sellPrice, int tradingVolume,
+			int openInterest, int buyVol, int sellVol) {
 		super();
 		this.contractId = contractId;
 		this.month = month;
 		this.time = time;
 		this.price = price;
+		this.buyPrice = buyPrice;
+		this.sellPrice = sellPrice;
 		this.tradingVolume = tradingVolume;
 		this.openInterest = openInterest;
 		this.buyVol = buyVol;
@@ -63,6 +67,22 @@ public class Tick {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	public int getBuyPrice() {
+		return buyPrice;
+	}
+
+	public void setBuyPrice(int buyPrice) {
+		this.buyPrice = buyPrice;
+	}
+
+	public int getSellPrice() {
+		return sellPrice;
+	}
+
+	public void setSellPrice(int sellPrice) {
+		this.sellPrice = sellPrice;
 	}
 
 	public int getTradingVolume() {
@@ -127,11 +147,10 @@ public class Tick {
 			return false;
 		return true;
 	}
-	
-	public String buildString(){
-		return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", getContractId(),
-				getMonth(), DateUtil.formatYMDHMS(getTime()), getPrice(),
-				getTradingVolume(), getOpenInterest(), getBuyVol(),
+
+	public String buildString() {
+		return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", getContractId(), getMonth(),
+				DateUtil.formatYMDHMS(getTime()), getPrice(), getTradingVolume(), getOpenInterest(), getBuyVol(),
 				getSellVol());
 	}
 }
